@@ -1,0 +1,40 @@
+---
+- name: import the key for the official MongoDB repository
+  apt_key:
+    keyserver: "hkp://keyserver.ubuntu.com:80"
+    id: "0C49F3730359A14518585931BC711F9BA15703C6"
+    state: present 
+    
+- name: add official MongoDB repository
+  apt_repository:
+    repo: deb [ arch=amd64,arm64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse
+    state: present
+    filename: 'mongodb-org-3.4'
+
+- name: update repo list & download MongoDB package
+  apt:
+    name: mongodb-org
+    update_cache: yes
+
+- name: start MongoDB service
+  service:
+    name: mongod
+    state: started
+    enabled: yes # enable service to start on boot
+
+      #     echo "Installing PHP7 mongoDb extension";
+# sudo pecl install mongodb;
+# echo "adding the extension to your php.ini file";
+# echo 'extension = mongodb.so' | sudo tee /etc/php/7.1/mods-available/mongodb.ini
+# sudo ln -s /etc/php/7.1/mods-available/mongodb.ini /etc/php/7.1/fpm/conf.d/30-mongodb.ini
+# sudo ln -s /etc/php/7.1/mods-available/mongodb.ini /etc/php/7.1/cli/conf.d/30-mongodb.ini
+# sudo service mongod start
+# echo "restarting The nginx server";
+# sudo service nginx restart && sudo service php7.1-fpm restart
+   
+    # handlers: 
+    #   - name: restart nginx
+    #     service: name=nginx state=restarted
+
+
+      

@@ -1,0 +1,21 @@
+---
+- name: MongoDB, Nginx, PHP7.1, and Laravel Deployment
+  hosts: webserver
+  remote_user:  '{{ ssh_remote_user }}'
+  # sudo privileges
+  become_method: sudo
+  become: yes # activate privilege escalation
+
+  vars_files:
+    - vars.yml
+  
+  # tasks:
+    # Testing
+    # - name: test connection
+    #   ping:
+    
+  roles:
+    - mongodb
+    - nginx
+    - php
+    - laravel

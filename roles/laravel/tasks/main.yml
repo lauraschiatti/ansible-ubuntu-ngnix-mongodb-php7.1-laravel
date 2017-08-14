@@ -1,0 +1,82 @@
+---
+- name: download composer
+  get_url: 
+    url: https://getcomposer.org/composer.phar 
+    dest: /usr/bin/composer
+    mode: a+x
+
+- name: ensure log directory
+  file: 
+    dest: '{{ webapps_dir }}/{{ app_name }}/log'
+    state: directory
+
+- name: deploy code from repository
+  git:
+    repo: '{{ repo_url }}'
+    dest: '{{ webapps_dir }}/{{ app_name }}/src'
+    remote: '{{ repo_remote }}' 
+    version: '{{ repo_version }}'
+
+  # - name: add deploy key
+  #   shell: echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWYVynuwFbLCbAYxy/+VOZ+e4D/3TbSqFKafcX0FDdohLFqjCsU34rtryG07/kMfSjbe2BrRDG+gxho+9U22QP/+/lgIfKMAM1qo8uDDHnlFor2x122sbRuZYTUP2AOYO9fBGOiIU9T3sWRzZ9yWHQu3rYLckZgRrOWKTRRHzQdTVo5wnT+NJm7BNEQLSdXEpZgMw9RTwFYvUcPgPX/scMwG2coyyV94xKfC71ONF/QZ9koIO7ahjLY8nSJ8ZGK4ECDkqMj8YVvMKbbRyBLTIxfrUjFOcUrpjpRp+XiQmb1buQzpHk0IKPuoAqxJEBRep2T4l/Gn3KKwimCDp+V/jj" >> /home/ubuntu/.ssh/authorized_keys
+
+- name: download and install project dependencies outlined in the /path/to/project/composer.lock
+  composer:
+    command: install
+    working_dir: '{{ webapps_dir }}/{{ app_name }}/src'
+    no_dev: no
+  become: no # deactivate sudo privilege
+
+# config app environment
+- name: create .env file
+  copy:
+    src: '{{ webapps_dir }}/{{ app_name }}/src/.env.example'
+    dest: '{{ webapps_dir }}/{{ app_name }}/src/.env'
+ 
+- name: set APP_NAME=aquapp
+  lineinfile: 
+    dest: '{{ webapps_dir }}/{{ app_name }}/src/.env'
+    regexp: '^APP_NAME=' 
+    line: APP_NAME=false
+
+- name: set APP_ENV=production
+  lineinfile: 
+    dest: '{{ webapps_dir }}/{{ app_name }}/src/.env'
+    regexp: '^APP_ENV=' 
+    line: APP_ENV=production
+
+- name: set APP_DEBUG=false
+  lineinfile:
+    dest: '{{ webapps_dir }}/{{ app_name }}/src/.env'
+    regexp: '^APP_DEBUG=' 
+    line: APP_DEBUG=false
+
+- name: set DB_CONNECTION
+  lineinfile: 
+    dest: '{{ webapps_dir }}/{{ app_name }}/src/.env'
+    regexp: '^DB_CONNECTION=' 
+    line: DB_CONNECTION=mongodb
+
+- name: set DB_HOST
+  lineinfile: 
+    dest: '{{ webapps_dir }}/{{ app_name }}/src/.env'
+    regexp: '^DB_HOST=' 
+    line: DB_HOST=127.0.0.1
+
+- name: set DB_PORT
+  lineinfile: 
+    dest: '{{ webapps_dir }}/{{ app_name }}/src/.env'
+    regexp: '^DB_PORT=' 
+    line: DB_PORT=27017
+
+- name: set DB_DATABASE
+  lineinfile: 
+    dest: '{{ webapps_dir }}/{{ app_name }}/src/.env'
+    regexp: '^DB_DATABASE=' 
+    line: 'DB_DATABASE={{ app_name }}'
+
+# app key generate
+
+# set permissions
+
+

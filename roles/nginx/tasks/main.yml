@@ -1,0 +1,73 @@
+---
+- name: add repositories
+  apt_repository: repo={{ item }} state=present
+  with_items:
+    - ppa:nginx/stable
+    - ppa:certbot/certbot # enable HTTPS
+
+- name: update packages
+  apt:
+    update_cache: yes
+
+- name: install main packages for python nginx build-essential
+  action: apt pkg={{ item }} state=installed update_cache=yes state=latest
+  with_items:
+    - git
+    - nginx
+    - build-essential
+    - ufw
+    - python-certbot-nginx
+    
+# configure firewall
+- name: enable UFW
+  ufw: 
+    direction: incoming 
+    policy: deny 
+    state: enabled
+
+- name: configure UFW rules
+  ufw: rule={{ item.rule }} port={{ item.port }} proto={{ item.proto}}
+  with_items:
+    - { rule: 'limit', port: 'ssh', proto: 'tcp' }  # UFW limit SSH
+    - { rule: 'allow', port: 'http', proto: 'tcp' }  # UFW open HTTP
+    - { rule: 'allow', port: 'https', proto: 'tcp' }  # UFW open HTTPS
+    - { rule: 'allow', port: '80', proto: 'tcp' }  # allow Nginx
+    - { rule: 'allow', port: '443', proto: 'tcp' } # allow Nginx SSL
+
+- name: enable UFW logging
+  ufw: 
+    logging: on
+  notify:
+    - restart ufw
+# end firewall configuration
+
+- name: certbot nginx standalone
+  shell: certbot certonly --agree-tos --standalone --non-interactive --text --rsa-key-size 4096  --email {{ mail }} --domains {{ domain_name }}
+ 
+- name: remove default nginx site 
+  file:
+    path: /etc/nginx/sites-enabled/default 
+    state: absent
+
+- name: write nginx config file
+  template:
+    src: nginx.conf 
+    dest: /etc/nginx/nginx.conf
+      
+- name: create nginx virtual host file for {{ app_name }}
+  template:
+    src: nginx-site.conf 
+    dest: /etc/nginx/sites-available/{{ app_name }}
+
+- name: create nginx symlink for {{ app_name }} to activate the host
+  file: 
+    src: /etc/nginx/sites-available/{{ app_name }} 
+    dest: /etc/nginx/sites-enabled/{{ app_name }} 
+    state: link
+  notify:
+    - restart nginx  
+
+- name: create webapps directory
+  file:
+    dest: '{{ webapps_dir }}'
+    state: directory

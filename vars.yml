@@ -1,0 +1,9 @@
+---
+  ssh_remote_user: ubuntu
+  app_name: aquapp
+  repo_url: https://github.com/IngenieriaDeSistemasUTB/aquapp2
+  repo_remote: origin
+  repo_version: master
+  webapps_dir: /srv/webapps
+  domain_name: aquapp.utb.services
+  mail: jairo.serrano@gmail.com
