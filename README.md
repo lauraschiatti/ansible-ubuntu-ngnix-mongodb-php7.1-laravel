@@ -1,6 +1,6 @@
 ## Laravel + Nginx + PHP7.1 + MongoDB Deployment using Ansible 
 
-- Requires Ansible 2.0+
+- Requires Ansible v2.0+
 - Expects Ubuntu hosts
 - Expects Laravel 5.x App to be deployed
 

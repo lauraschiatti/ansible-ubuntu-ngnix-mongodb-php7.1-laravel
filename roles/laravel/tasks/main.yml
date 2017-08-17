@@ -27,7 +27,7 @@
     no_dev: no
   become: no # deactivate sudo privilege
 
-# config app environment
+# configure app environment
 - name: create .env file
   copy:
     src: '{{ webapps_dir }}/{{ app_name }}/src/.env.example'
@@ -50,6 +50,12 @@
     dest: '{{ webapps_dir }}/{{ app_name }}/src/.env'
     regexp: '^APP_DEBUG=' 
     line: APP_DEBUG=false
+
+- name: set APP_URL
+  lineinfile:
+    dest: '{{ webapps_dir }}/{{ app_name }}/src/.env'
+    regexp: '^APP_URL=' 
+    line: APP_URL={{ domain_name }}
 
 - name: set DB_CONNECTION
   lineinfile: 
@@ -75,8 +81,29 @@
     regexp: '^DB_DATABASE=' 
     line: 'DB_DATABASE={{ app_name }}'
 
-# app key generate
+ - name: generate APP_KEY
+   shell: php artisan key:generate
+   args:
+    chdir: '{{ webapps_dir }}/{{ app_name }}/src'
+# end configure app environment    
 
-# set permissions
+# set laravel permissions
+# - name: ensure storage dir is writable
+#   file:
+#     path: '{{ webapps_dir }}/{{ app_name }}/src/storage'
+#     state: directory
+#     mode: 0775
 
+# - name: ensure bootstrap cache dir is writable
+#   file:
+#     path: '{{ webapps_dir }}/{{ app_name }}/src/bootstrap/cache'
+#     state: directory
+#     mode: 0775
+
+# - name: transfer ownership of the laravel directory to nginx user (www-data)
+#   file:
+#     path: '{{ webapps_dir }}/{{ app_name }}/src'
+#     owner: www-data
+#     group: foo
+# end set laravel permissions
 
