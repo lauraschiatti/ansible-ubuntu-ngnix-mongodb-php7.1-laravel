@@ -1,12 +1,12 @@
 ---
 - name: download composer
-  get_url: 
-    url: https://getcomposer.org/composer.phar 
+  get_url:
+    url: https://getcomposer.org/composer.phar
     dest: /usr/bin/composer
     mode: a+x
 
 - name: ensure log directory
-  file: 
+  file:
     dest: '{{ webapps_dir }}/{{ app_name }}/log'
     state: directory
 
@@ -14,7 +14,7 @@
   git:
     repo: '{{ repo_url }}'
     dest: '{{ webapps_dir }}/{{ app_name }}/src'
-    remote: '{{ repo_remote }}' 
+    remote: '{{ repo_remote }}'
     version: '{{ repo_version }}'
 
   # - name: add deploy key
@@ -32,60 +32,60 @@
   copy:
     src: '{{ webapps_dir }}/{{ app_name }}/src/.env.example'
     dest: '{{ webapps_dir }}/{{ app_name }}/src/.env'
- 
+
 - name: set APP_NAME=aquapp
-  lineinfile: 
+  lineinfile:
     dest: '{{ webapps_dir }}/{{ app_name }}/src/.env'
-    regexp: '^APP_NAME=' 
+    regexp: '^APP_NAME='
     line: APP_NAME=false
 
 - name: set APP_ENV=production
-  lineinfile: 
+  lineinfile:
     dest: '{{ webapps_dir }}/{{ app_name }}/src/.env'
-    regexp: '^APP_ENV=' 
+    regexp: '^APP_ENV='
     line: APP_ENV=production
 
 - name: set APP_DEBUG=false
   lineinfile:
     dest: '{{ webapps_dir }}/{{ app_name }}/src/.env'
-    regexp: '^APP_DEBUG=' 
+    regexp: '^APP_DEBUG='
     line: APP_DEBUG=false
 
 - name: set APP_URL
   lineinfile:
     dest: '{{ webapps_dir }}/{{ app_name }}/src/.env'
-    regexp: '^APP_URL=' 
+    regexp: '^APP_URL='
     line: APP_URL={{ domain_name }}
 
 - name: set DB_CONNECTION
-  lineinfile: 
+  lineinfile:
     dest: '{{ webapps_dir }}/{{ app_name }}/src/.env'
-    regexp: '^DB_CONNECTION=' 
+    regexp: '^DB_CONNECTION='
     line: DB_CONNECTION=mongodb
 
 - name: set DB_HOST
-  lineinfile: 
+  lineinfile:
     dest: '{{ webapps_dir }}/{{ app_name }}/src/.env'
-    regexp: '^DB_HOST=' 
+    regexp: '^DB_HOST='
     line: DB_HOST=127.0.0.1
 
 - name: set DB_PORT
-  lineinfile: 
+  lineinfile:
     dest: '{{ webapps_dir }}/{{ app_name }}/src/.env'
-    regexp: '^DB_PORT=' 
+    regexp: '^DB_PORT='
     line: DB_PORT=27017
 
 - name: set DB_DATABASE
-  lineinfile: 
+  lineinfile:
     dest: '{{ webapps_dir }}/{{ app_name }}/src/.env'
-    regexp: '^DB_DATABASE=' 
+    regexp: '^DB_DATABASE='
     line: 'DB_DATABASE={{ app_name }}'
 
 - name: generate APP_KEY
   shell: php artisan key:generate
   args:
     chdir: '{{ webapps_dir }}/{{ app_name }}/src'
-# end configure app environment    
+# end configure app environment
 
 # set laravel permissions
 # - name: ensure storage dir is writable
@@ -106,4 +106,3 @@
 #     owner: www-data
 #     group: foo
 # end set laravel permissions
-

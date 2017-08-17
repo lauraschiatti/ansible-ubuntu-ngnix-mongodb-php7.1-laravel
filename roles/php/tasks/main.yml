@@ -1,66 +1,28 @@
 ---
-- name: add php repository to install php7.1
-  apt_repository:
-    repo: ppa:ondrej/php
-    state: present
+#- name: add php repository to install php7.1
+#  apt_repository:
+#    repo: ppa:ondrej/php
+#    state: present
 
-- name: update packages
-  apt:
-    update_cache: yes
+#- name: update packages
+#  apt:
+#    update_cache: yes
 
 - name: install required packages
   action: apt pkg={{ item }} state=installed update_cache=yes state=latest
   with_items:
-    - php7.1
-    - php7.1-common
-    - php7.1-mbstring
-    - php7.1-xml
-    - php7.1-fpm
-    # - pkg-config
-    - php-pear # php extension and application repository
-    - php7.1-dev # php5-dev package
-    # - php-mongodb
+    - php7.0
+    - php7.0-common
+    - php7.0-mbstring
+    - php7.0-xml
+    - php7.0-fpm
+    - php7.0-gd
+    - php7.0-fpm
+    - php-mongodb
+    - composer
+    - unzip
 
 - name: secure php cgi
-  shell: echo "cgi.fix_pathinfo=0" >> /etc/php/7.1/fpm/php.ini
-  notify:
-    - restart php7.1-fpm
-
-# install MongoDB PHP7.1 extension
-- name: update pecl.php.net protocols
-  command: pear update-channels
-
-# - name: install MongoDB driver for PHP
-#   pear: 
-#     name: pecl/mongodb
-#     state: present
-
-- name: install mongo extension
-  shell: pecl install mongodb
-
-- name: add extension=mongodb.so to php.ini
-  shell: echo "extension=mongodb.so" >> {{ item }}
-  with_items:
-    - /etc/php/7.1/fpm/php.ini
-    - /etc/php/7.1/cli/php.ini
-
-- name: create extension file
-  shell: echo "extension=mongodb.so" > /etc/php/7.1/mods-available/mongodb.ini
-  args:
-    creates: /etc/php/7.1/mods-available/mongodb.ini
-  notify:
-    - restart nginx
-    - restart php7.1-fpm
-# end install mongod PHP7.1 extension
-
-
-  
-  
-# sudo pecl install mongodb;
-# echo "adding the extension to your php.ini file";
-# echo 'extension = mongodb.so' | sudo tee /etc/php/7.1/mods-available/mongodb.ini
-## sudo ln -s /etc/php/7.1/mods-available/mongodb.ini /etc/php/7.1/fpm/conf.d/30-mongodb.ini
-## sudo ln -s /etc/php/7.1/mods-available/mongodb.ini /etc/php/7.1/cli/conf.d/30-mongodb.ini
-## sudo service mongod start
-# echo "restarting The nginx server";
-# sudo service nginx restart && sudo service php7.1-fpm restart
+  shell: echo "cgi.fix_pathinfo=0" >> /etc/php/7.0/fpm/php.ini
+#  notify:
+#    - restart php-fpm7.0
