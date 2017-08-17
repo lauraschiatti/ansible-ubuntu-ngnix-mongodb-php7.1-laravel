@@ -81,9 +81,9 @@
     regexp: '^DB_DATABASE=' 
     line: 'DB_DATABASE={{ app_name }}'
 
- - name: generate APP_KEY
-   shell: php artisan key:generate
-   args:
+- name: generate APP_KEY
+  shell: php artisan key:generate
+  args:
     chdir: '{{ webapps_dir }}/{{ app_name }}/src'
 # end configure app environment    
 
