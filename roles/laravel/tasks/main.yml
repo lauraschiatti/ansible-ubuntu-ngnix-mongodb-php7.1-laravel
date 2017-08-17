@@ -25,11 +25,36 @@
     command: install
     working_dir: '{{ webapps_dir }}/{{ app_name }}/src'
     no_dev: no
-  become: no # deactivate sudo privilege
+  #become: no # deactivate sudo privilege
+
+#set laravel permissions
+- name: transfer ownership of the laravel directory to nginx user (www-data)
+  file:
+    path: '{{ webapps_dir }}/{{ app_name }}/src'
+    owner: www-data
+    group: www-data
+
+- name: ensure storage dir is writable
+  file:
+    path: '{{ webapps_dir }}/{{ app_name }}/src/storage'
+    state: directory
+    mode: 0775
+    owner: www-data
+    group: www-data
+
+- name: ensure bootstrap cache dir is writable
+  file:
+    path: '{{ webapps_dir }}/{{ app_name }}/src/bootstrap/cache'
+    state: directory
+    mode: 0775
+    owner: www-data
+    group: www-data
+# end set laravel permissions
 
 # configure app environment
 - name: create .env file
   copy:
+    remote_src: true
     src: '{{ webapps_dir }}/{{ app_name }}/src/.env.example'
     dest: '{{ webapps_dir }}/{{ app_name }}/src/.env'
 
@@ -86,23 +111,3 @@
   args:
     chdir: '{{ webapps_dir }}/{{ app_name }}/src'
 # end configure app environment
-
-# set laravel permissions
-# - name: ensure storage dir is writable
-#   file:
-#     path: '{{ webapps_dir }}/{{ app_name }}/src/storage'
-#     state: directory
-#     mode: 0775
-
-# - name: ensure bootstrap cache dir is writable
-#   file:
-#     path: '{{ webapps_dir }}/{{ app_name }}/src/bootstrap/cache'
-#     state: directory
-#     mode: 0775
-
-# - name: transfer ownership of the laravel directory to nginx user (www-data)
-#   file:
-#     path: '{{ webapps_dir }}/{{ app_name }}/src'
-#     owner: www-data
-#     group: foo
-# end set laravel permissions

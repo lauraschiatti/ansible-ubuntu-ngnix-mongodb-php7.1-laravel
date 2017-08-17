@@ -8,30 +8,25 @@
 
   vars_files:
     - vars.yml
-  
-  # tasks:
-    # Testing
-    # - name: test connection
-    #   ping:
-    
+
   roles:
     - mongodb
     - nginx
     - php
     - laravel
-  
+
   handlers:
     - name: restart ufw
-      service: 
-        name: ufw 
-        state: restarted
-    
-    - name: restart nginx
-      service: 
-        name: nginx 
+      service:
+        name: ufw
         state: restarted
 
-    - name: restart php7.1-fpm
+    - name: restart nginx
       service:
-        name: php7.1-fpm 
+        name: nginx
+        state: restarted
+
+    - name: restart php7.0-fpm
+      service:
+        name: php7.0-fpm
         state: restarted

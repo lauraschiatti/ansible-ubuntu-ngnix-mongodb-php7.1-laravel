@@ -69,3 +69,5 @@
   file:
     dest: '{{ webapps_dir }}'
     state: directory
+    owner: www-data
+    group: www-data

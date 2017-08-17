@@ -1,17 +1,10 @@
 ---
-#- name: add php repository to install php7.1
-#  apt_repository:
-#    repo: ppa:ondrej/php
-#    state: present
-
-#- name: update packages
-#  apt:
-#    update_cache: yes
 
 - name: install required packages
   action: apt pkg={{ item }} state=installed update_cache=yes state=latest
   with_items:
     - php7.0
+    - php-fpm
     - php7.0-common
     - php7.0-mbstring
     - php7.0-xml
@@ -19,10 +12,10 @@
     - php7.0-gd
     - php7.0-fpm
     - php-mongodb
-    - composer
+    - php7.0-mcrypt
     - unzip
 
 - name: secure php cgi
   shell: echo "cgi.fix_pathinfo=0" >> /etc/php/7.0/fpm/php.ini
-#  notify:
-#    - restart php-fpm7.0
+  notify:
+    - restart php7.0-fpm
