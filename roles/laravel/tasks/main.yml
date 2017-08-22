@@ -106,6 +106,18 @@
     regexp: '^DB_DATABASE='
     line: 'DB_DATABASE={{ app_name }}'
 
+- name: set DB_USERNAME
+  lineinfile:
+    dest: '{{ webapps_dir }}/{{ app_name }}/src/.env'
+    regexp: '^DB_USERNAME='
+    line: 'DB_USERNAME={{ db_user }}'
+
+- name: set DB_PASSWORD
+  lineinfile:
+    dest: '{{ webapps_dir }}/{{ app_name }}/src/.env'
+    regexp: '^DB_PASSWORD='
+    line: 'DB_PASSWORD={{ db_pwd }}'
+
 - name: generate APP_KEY
   shell: php artisan key:generate
   args:

@@ -7,3 +7,5 @@
   webapps_dir: /srv/webapps
   domain_name: aquapp.utb.services
   mail: jairo.serrano@gmail.com
+  db_user: root
+  db_pwd: root
