@@ -70,11 +70,11 @@
     regexp: '^APP_ENV='
     line: APP_ENV=production
 
-- name: set APP_DEBUG=false
+- name: set APP_DEBUG=false  ## REVISAR
   lineinfile:
     dest: '{{ webapps_dir }}/{{ app_name }}/src/.env'
     regexp: '^APP_DEBUG='
-    line: APP_DEBUG=false
+    line: APP_DEBUG=true 
 
 - name: set APP_URL
   lineinfile:

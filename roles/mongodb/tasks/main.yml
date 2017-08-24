@@ -22,22 +22,4 @@
     state: started
     enabled: yes # enable service to start on boot
 
-# create app DB using ansible
-- name: install pip
-  apt:
-    pkg: python-pip
-
-- name: install pymongo module
-  pip:
-    name: pymongo
-
-# - name: create app DB
-#   mongodb_user:
-#     database: '{{ app_name }}'
-#     name: '{{ db_user }}'
-#     password: '{{ db_pwd }}'
-#     state: present #The localhost login exception only allows the first admin account to be created
-
-# end create app DB using ansible
-
       
